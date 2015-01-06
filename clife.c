@@ -5,18 +5,18 @@
 /*
 	Function: create
 	Creates a two dimenstional array and populates it with a random amount of 1's and 0's.
-	Takes parameters width and height of the 2d array.
+	Takes parameters width and height of the 2d array and a randomness value.
 	Returns a double pointer to the created array.
 */
 
-int ** create(int width, int height)
+int ** create(int width, int height, int randomness)
 {
 	// Create and allocate the heap memory required for each row of the array.
 	int **world;
 	world = (int **)malloc(height * sizeof(int *));
 
 	// Set minimum and maximum values for the random number generator.
-	int min = 1;
+	int min = -1;
 	int max = 100;
 
 	srand(time(NULL));
@@ -35,8 +35,8 @@ int ** create(int width, int height)
 	    	int r = max + rand() / (RAND_MAX / (min - max + 1) + 1);
 	    	printf("%d ", r);
 
-	    	// Assign either a 1 or a 0 to that position depending on the random number.
-	    	if (r <= 8)
+	    	// Assign either a 1 or a 0 to that position depending on the random number and the desired randomness.
+	    	if (r <= randomness)
 	    	{
 	    		world[y][x] = 1;
 	    	}
@@ -182,14 +182,18 @@ void delay(int milliseconds)
 
 int main(int argc, char *argv[])
 {
-	// Converts the console arguments into intergers for width and height of the world as well as the desired number of generations.
+	// Converts the console arguments into intergers for width and height of the world
+	// as well as the desired number of generations, randomness percentage, and desired 
+	// delay between genenerations in milliseconds.
 	int width = atoi(argv[1]);
 	int height = atoi(argv[2]);
 	int generations = atoi(argv[3]);
+	int randomness = atoi(argv[4]);
+	int dlay = atoi(argv[5]);
 
 	// Creates the world and the next gen world using function create().
-	int **world = create(width, height);
-	int **newworld = create(width, height);
+	int **world = create(width, height, randomness);
+	int **newworld = create(width, height, randomness);
 
 	// Runs through the desired number of generations.
 	for (int i = 0; i < generations; ++i)
@@ -207,8 +211,8 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		// Delays a certain period of time.
-		delay(100);
+		// Delays a desired period of time.
+		delay(dlay);
 	}
 
 	// Frees the heap memory associated with each of the 2d array worlds.
